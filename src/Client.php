@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\Panther;
 
+use Facebook\WebDriver\Exception\Internal\WebDriverCurlException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\TimeoutException;
 use Facebook\WebDriver\JavaScriptExecutor;
@@ -105,7 +106,11 @@ final class Client extends AbstractBrowser implements WebDriver, JavaScriptExecu
 
     public function __destruct()
     {
-        $this->quit();
+        try {
+            $this->quit();
+        } catch(WebDriverCurlException) {
+            return;
+        }
     }
 
     public function start(): void
